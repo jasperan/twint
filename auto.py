@@ -13,8 +13,11 @@ def jobone(filter):
 	# choose beginning time (narrow results)
 	c.Since = "2018-01-01"
 	# set limit on total tweets
-	#c.Limit = 10
+	c.Limit = 10
 	c.Pandas = True
+
+	'''c.Format = '{}''username', 'created_at', 'timestamp', 'user_id', 'username', 'name', 'place', 'tweet', 'mentions', 'urls', 'photos', 'replies_count', 'retweets_count',
+		'likes_count', 'hashtags', 'link', 'retweet', 'video', 'near', 'geo', 'source', 'retweet_date']'''
 	'''
 	# format of the csv
 	c.Custom = ["date", "time", "username", "tweet", "link", "likes", "retweets", "replies", "mentions", "hashtags"]
@@ -50,4 +53,4 @@ def jobtwo(x):
 
 filters = ['@oracle', '@google', '@awscloud', '@googlecloud', '@googlecloudtech', '@oraclecx', '@oracleopenworld', '@oracledatabase', '@oraclemarketing', '@ibm', '@ibmcloud']
 for x in filters:
-	jobone() # look for Oracle mentions and analyze sentiment
+	jobone(x) # look for Oracle mentions and analyze sentiment
