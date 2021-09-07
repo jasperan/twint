@@ -113,3 +113,5 @@ ENV/
 *.txt
 
 test_twint.py
+
+config.yaml
