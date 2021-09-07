@@ -70,11 +70,14 @@ def search(filter_search, connection):
        'retweet_id', 'reply_to', 'retweet_date', 'translate', 'trans_src',
        'trans_dest']
       '''
+	consecutive_exceptions = int()
 	for index, x in tweets_df.iterrows():
+		if consecutive_exceptions > 50:
+			break
 		geoloc = str()
 		try:
 			geoloc = x['geo'].get('coordinates')
-		except IndexError:
+		except AttributeError:
 			pass
 		row = [
 			filter_search, x['link'], x['username'], x['name'], x['place'], x['tweet'], -1, -1, -1, -1, str(extract_hash_tags(x['tweet'])), to_timestamp(x['created_at']), 
@@ -82,8 +85,12 @@ def search(filter_search, connection):
 		]
 		try:
 			cursor.execute("insert into admin.public_sentiment values (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20)", row)
+			print('Inserted new tweet with ID {}'.format(x['link']))
+			print("Currently on row: {}; Currently iterrated {}% of rows".format(index, (index + 1)/len(tweets_df.index) * 100))
+			consecutive_exceptions = 0
 		except Exception as e:
-			print('Can not insert {}. Continuing. {}'.format(row, e))
+			consecutive_exceptions += 1
+			#print('Can not insert {}. Continuing. {}'.format(row, e))
 
 
 
@@ -116,15 +123,27 @@ def user(user, connection):
        'retweet_id', 'reply_to', 'retweet_date', 'translate', 'trans_src',
        'trans_dest']
       '''
+	sconsecutive_exceptions = int()
 	for index, x in tweets_df.iterrows():
+		if consecutive_exceptions > 50:
+			break
+		geoloc = str()
+		try:
+			geoloc = x['geo'].get('coordinates')
+		except AttributeError:
+			pass
 		row = [
-			user, x['link'], x['username'], x['name'], x['place'], x['tweet'], -1, -1, -1, -1, str(extract_hash_tags(x['tweet'])), to_timestamp(x['created_at']), 
-			x['source'], x['language'], x['nretweets'], x['nlikes'], x['nreplies'], x['geo'], x['near'], x['retweet_date'] 
+			filter_search, x['link'], x['username'], x['name'], x['place'], x['tweet'], -1, -1, -1, -1, str(extract_hash_tags(x['tweet'])), to_timestamp(x['created_at']), 
+			x['source'], x['language'], x['nretweets'], x['nlikes'], x['nreplies'], geoloc, x['near'], x['retweet_date'] 
 		]
 		try:
 			cursor.execute("insert into admin.user_sentiment values (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13, :14, :15, :16, :17, :18, :19, :20)", row)
+			print('Inserted new tweet with ID {}'.format(x['link']))
+			print("Currently on row: {}; Currently iterrated {}% of rows".format(index, (index + 1)/len(tweets_df.index) * 100))
+			consecutive_exceptions = 0
 		except Exception as e:
-			print('Can not insert {}. Continuing. {}'.format(row, e))
+			consecutive_exceptions += 1
+			#print('Can not insert {}. Continuing. {}'.format(row, e))
 
 
 
